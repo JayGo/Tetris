@@ -88,6 +88,16 @@ class Box {
         this.y = this.lt.y
     }
 
+    translate(distance) {
+        this.lt.x += distance;
+        this.rt.x += distance;
+        this.rb.x += distance;
+        this.lb.x += distance
+
+        this.x = this.lt.x;
+        this.y = this.lt.y;
+    }
+
     draw(canvasCtx) {
         canvasCtx.fillStyle = this.color
         canvasCtx.fillRect(this.x, this.y, this.w, this.h);
@@ -136,6 +146,14 @@ class BaseTetris extends Drawable {
         let pivotY = Number(((pivotLt.y + pivotRb.y) / 2.0).toFixed(1))
 
         this.boxes.forEach(it => it.rotate(pivotX, pivotY, deg))
+    }
+
+    translate(distance) {
+        if (Constant.DEBUG_TETRIS) {
+            console.log('tetris translate');
+        }
+
+        this.boxes.forEach(it => it.translate(distance));
     }
 
     onDraw(canvasCtx) {

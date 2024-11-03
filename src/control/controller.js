@@ -47,19 +47,30 @@ export class Controller {
 
         if (Constant.DEBUG_ROTATE) {
             console.log('controller rotateR');
+            console.log(`before rotateR: ${tetris}`)
+
         }
         this.controllable.rotate(Math.PI / 2)
-    }
-
-    rotateL() {
-        if (this.controllable === undefined) {
-            return
-        }
 
         if (Constant.DEBUG_ROTATE) {
-            console.log('controller rotateL');
+            console.log(`after rotateR: ${tetris}`)
         }
-        this.controllable.rotate(-Math.PI / 2)
+    }
+
+    translateL() {
+        if (this.controllable === undefined) {
+            return;
+        }
+
+        this.controllable.translate(-Constant.TETRIS_SIZE);
+    }
+
+    translateR() {
+        if (this.controllable === undefined) {
+            return;
+        }
+
+        this.controllable.translate(Constant.TETRIS_SIZE);
     }
 
     resume() {

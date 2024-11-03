@@ -36,30 +36,16 @@ function setUpController(tetris) {
     let controller = Controller.getInstance()
 
     window.addEventListener('keydown', function (event) {
-        if (event.key === 'ArrowLeft') {
-            if (Constant.DEBUG_ROTATE) {
-                console.log('全局（通过window）键盘左键被按下');
-                console.log(`before rotateL: ${tetris}`)
-            }
-            controller.rotateL()
-            if (Constant.DEBUG_ROTATE) {
-                console.log(`after rotateL: ${tetris}`)
-            }
-
-
-        } else if (event.key === 'ArrowRight') {
-            if (Constant.DEBUG_ROTATE) {
-                console.log('全局（通过window）键盘右键被按下');
-                console.log(`before rotateR: ${tetris}`)
-            }
-            controller.rotateR()
-            if (Constant.DEBUG_ROTATE) {
-                console.log(`after rotateR: ${tetris}`)
-            }
-
-
-            // tetris.draw("#00FF00")
+        switch (event.key) {
+            case 'ArrowUp':
+                controller.rotateR();break;
+            case 'ArrowLeft':
+                controller.translateL();break;
+            case 'ArrowRight':
+                controller.translateR();break
+            default:break;
         }
+
 
         canvasDelegate.draw()
     });
