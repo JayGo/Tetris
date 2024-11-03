@@ -32,7 +32,7 @@ import {TetrisFactory} from "./model/tetris.js";
 import {Constant} from "./model/constant.js";
 import {Controller} from "./control/controller.js";
 
-function setUpController(tetris) {
+function setUpController() {
     let controller = Controller.getInstance()
 
     window.addEventListener('keydown', function (event) {
@@ -45,9 +45,10 @@ function setUpController(tetris) {
                 controller.translateR();break;
             case 'ArrowDown':
                 controller.translateD();break;
+            case ' ':
+                controller.toggleState();break;
             default:break;
         }
-
 
         canvasDelegate.draw()
     });
@@ -65,10 +66,14 @@ export function setupGame(canvas) {
     let tetris = tetrisFactory.makeTetris(Constant.TETRIS_TYPE_T)
     canvasDelegate.registerDrawable(tetris)
     canvasDelegate.draw()
-    // tetris.draw()
 
-    let controller = setUpController(tetris)
+    let controller = setUpController()
     controller.setControllable(tetris)
+
+    controller.setIntervalCallback(() => {
+        controller.translateD();
+        canvasDelegate.draw();
+    })
 }
 
 //TIP To find text strings in your project, you can use the <shortcut actionId="FindInPath"/> shortcut. Press it and type in <b>counter</b> – you’ll get all matches in one place.

@@ -7,15 +7,17 @@ export class Controller {
 
     isPlaying = false
 
-    callback
+    intervalCallback
+
+    intervalId
 
     controllable
 
     constructor() {
     }
 
-    setCallback(callback) {
-        this.callback = callback
+    setIntervalCallback(intervalCallback) {
+        this.intervalCallback = intervalCallback
     }
 
     static getInstance() {
@@ -26,14 +28,14 @@ export class Controller {
     }
 
     start() {
-        if (this.isStarted || this.callback === undefined) {
+        if (this.isStarted || this.intervalCallback === undefined) {
             return
         }
 
-        this.callback.onUpdate()
+        this.intervalId = setInterval(this.intervalCallback, 1000)
 
         this.isStarted = true
-
+        this.isPlaying = true
     }
 
     setControllable(controllable) {
@@ -41,7 +43,7 @@ export class Controller {
     }
 
     rotateR() {
-        if (this.controllable === undefined) {
+        if (this.controllable === undefined || !this.isPlaying) {
             return
         }
 
@@ -58,7 +60,7 @@ export class Controller {
     }
 
     translateL() {
-        if (this.controllable === undefined) {
+        if (this.controllable === undefined || !this.isPlaying) {
             return;
         }
 
@@ -66,7 +68,7 @@ export class Controller {
     }
 
     translateR() {
-        if (this.controllable === undefined) {
+        if (this.controllable === undefined || !this.isPlaying) {
             return;
         }
 
@@ -74,18 +76,36 @@ export class Controller {
     }
 
     translateD() {
-        if (this.controllable === undefined) {
+        if (this.controllable === undefined || !this.isPlaying) {
             return;
         }
 
         this.controllable.translate(0, Constant.TETRIS_SIZE);
     }
 
+    toggleState() {
+        if (!this.isStarted) {
+            this.start();
+            return;
+        }
+
+        if (this.isPlaying) {
+            this.pause();
+        } else {
+            this.resume();
+        }
+    }
+
     resume() {
+        this.intervalId = setInterval(this.intervalCallback, 1000)
+
         this.isPlaying = true
     }
 
     pause() {
+        clearInterval(this.intervalId)
+        this.intervalId = undefined
+
         this.isPlaying = false
     }
 }
