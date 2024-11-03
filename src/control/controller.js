@@ -62,7 +62,7 @@ export class Controller {
             return;
         }
 
-        this.controllable.translate(-Constant.TETRIS_SIZE);
+        this.controllable.translate(-Constant.TETRIS_SIZE, 0);
     }
 
     translateR() {
@@ -70,7 +70,15 @@ export class Controller {
             return;
         }
 
-        this.controllable.translate(Constant.TETRIS_SIZE);
+        this.controllable.translate(Constant.TETRIS_SIZE, 0);
+    }
+
+    translateD() {
+        if (this.controllable === undefined) {
+            return;
+        }
+
+        this.controllable.translate(0, Constant.TETRIS_SIZE);
     }
 
     resume() {

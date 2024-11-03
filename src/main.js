@@ -42,7 +42,9 @@ function setUpController(tetris) {
             case 'ArrowLeft':
                 controller.translateL();break;
             case 'ArrowRight':
-                controller.translateR();break
+                controller.translateR();break;
+            case 'ArrowDown':
+                controller.translateD();break;
             default:break;
         }
 
