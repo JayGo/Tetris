@@ -1,16 +1,14 @@
 import {Constant} from "./constant.js";
-import {Coordinate} from "./canvas.js";
+import { Coordinate, Drawable, CanvasDelegate } from './canvas.js';
 
 export class TetrisFactory {
     static instance
-    canvas
-    constructor(canvas) {
-        this.canvas = canvas
+    constructor() {
     }
 
-    static getInstance(canvas) {
+    static getInstance() {
         if (TetrisFactory.instance === undefined) {
-            TetrisFactory.instance = new TetrisFactory(canvas)
+            TetrisFactory.instance = new TetrisFactory()
         }
         return TetrisFactory.instance
     }
@@ -18,7 +16,7 @@ export class TetrisFactory {
     makeTetris(type) {
         let tetris
         switch (type) {
-            case 0 : tetris = new TTetris(this.canvas);break;
+            case 0 : tetris = new TTetris();break;
         }
         return tetris
     }
@@ -51,9 +49,9 @@ class Box {
         vertexes.forEach(coord => {
             let cos = Number(Math.cos(deg).toFixed(1))
             let sin = Number(Math.sin(deg).toFixed(1))
-            console.log(`cos(${deg}) = ${cos}, sin(${deg}) = ${sin}, px = ${px}, py = ${py}`)
-            // x = cos(q)(coord.x + px) - sin(q)(coord.y + py) - px
-            // y = sin(q)(coord.x + px) + sin(q)(coord.y + py) - py
+            if (Constant.DEBUG_TETRIS) {
+                console.log(`cos(${deg}) = ${cos}, sin(${deg}) = ${sin}, px = ${px}, py = ${py}`)
+            }
             const x = coord.x;
             const y = coord.y;
 
@@ -90,12 +88,9 @@ class Box {
         this.y = this.lt.y
     }
 
-    draw(canvas, newColor) {
-        canvas.fillStyle = this.color
-        if (newColor !== undefined) {
-            canvas.fillStyle = newColor
-        }
-        canvas.fillRect(this.x, this.y, this.w, this.h);
+    draw(canvasCtx) {
+        canvasCtx.fillStyle = this.color
+        canvasCtx.fillRect(this.x, this.y, this.w, this.h);
     }
 
     toString() {
@@ -103,20 +98,18 @@ class Box {
     }
 }
 
-class BaseTetris {
+class BaseTetris extends Drawable {
     boxes
     midX
     baseY
-    canvasCtx
 
-    constructor(canvas) {
-        this.canvasCtx = canvas.getContext("2d");
-        let l = 0
-        let t = 0
-        let r = canvas.width
+    constructor() {
+        super()
 
-        this.midX = (l + r) / 2.0
-        this.baseY = t
+        let width = CanvasDelegate.getInstance().getWidth();
+
+        this.midX = width / 2.0
+        this.baseY = 0
 
         this.boxes = new Array(4)
     }
@@ -131,8 +124,10 @@ class BaseTetris {
         }
     }
 
-    rotateR() {
-        console.log('tetris rotateR');
+    rotate(deg) {
+        if (Constant.DEBUG_TETRIS) {
+            console.log('tetris rotate');
+        }
 
         let pivotBox = this.boxes[1]
         let pivotLt = pivotBox.lt
@@ -140,11 +135,11 @@ class BaseTetris {
         let pivotX = Number(((pivotLt.x + pivotRb.x) / 2.0).toFixed(1))
         let pivotY = Number(((pivotLt.y + pivotRb.y) / 2.0).toFixed(1))
 
-        this.boxes.forEach(it => it.rotate(pivotX, pivotY, Math.PI / 2))
+        this.boxes.forEach(it => it.rotate(pivotX, pivotY, deg))
     }
 
-    draw(newColor) {
-        this.boxes.forEach(it => it.draw(this.canvasCtx, newColor))
+    onDraw(canvasCtx) {
+        this.boxes.forEach(it => it.draw(canvasCtx))
     }
 
     toString() {
@@ -159,8 +154,8 @@ class BaseTetris {
 }
 
 class TTetris extends BaseTetris {
-    constructor(canvas) {
-        super(canvas);
+    constructor() {
+        super();
         let coords = [
             [-1.5, 1.0, -0.5, 2.0],
             [-0.5, 1.0, 0.5, 2.0],

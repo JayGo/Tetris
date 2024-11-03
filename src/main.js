@@ -1,4 +1,6 @@
 //TIP With Search Everywhere, you can find any action, file, or symbol in your project. Press <shortcut actionId="Shift"/> <shortcut actionId="Shift"/>, type in <b>terminal</b>, and press <shortcut actionId="EditorEnter"/>. Then run <shortcut raw="npm run dev"/> in the terminal and click the link in its output to open the app in the browser.
+import { CanvasDelegate } from './model/canvas.js';
+
 export function setupCounter(element) {
     //TIP Try <shortcut actionId="GotoDeclaration"/> on <shortcut raw="counter"/> to see its usages. You can also use this shortcut to jump to a declaration – try it on <shortcut raw="counter"/> on line 13.
     let counter = 0;
@@ -35,24 +37,47 @@ function setUpController(tetris) {
 
     window.addEventListener('keydown', function (event) {
         if (event.key === 'ArrowLeft') {
-            console.log('全局（通过window）键盘左键被按下');
-        } else if (event.key === 'ArrowRight') {
-            console.log('全局（通过window）键盘右键被按下');
-            console.log(`before rotateR: ${tetris}`)
-            controller.rotateR()
-            console.log(`after rotateR: ${tetris}`)
+            if (Constant.DEBUG_ROTATE) {
+                console.log('全局（通过window）键盘左键被按下');
+                console.log(`before rotateL: ${tetris}`)
+            }
+            controller.rotateL()
+            if (Constant.DEBUG_ROTATE) {
+                console.log(`after rotateL: ${tetris}`)
+            }
 
-            tetris.draw("#00FF00")
+
+        } else if (event.key === 'ArrowRight') {
+            if (Constant.DEBUG_ROTATE) {
+                console.log('全局（通过window）键盘右键被按下');
+                console.log(`before rotateR: ${tetris}`)
+            }
+            controller.rotateR()
+            if (Constant.DEBUG_ROTATE) {
+                console.log(`after rotateR: ${tetris}`)
+            }
+
+
+            // tetris.draw("#00FF00")
         }
+
+        canvasDelegate.draw()
     });
 
     return controller
 }
 
+let canvasDelegate;
+
 export function setupGame(canvas) {
-    let tetrisFactory = TetrisFactory.getInstance(canvas)
+    CanvasDelegate.init(canvas)
+    canvasDelegate = CanvasDelegate.getInstance()
+
+    let tetrisFactory = TetrisFactory.getInstance()
     let tetris = tetrisFactory.makeTetris(Constant.TETRIS_TYPE_T)
-    tetris.draw()
+    canvasDelegate.registerDrawable(tetris)
+    canvasDelegate.draw()
+    // tetris.draw()
 
     let controller = setUpController(tetris)
     controller.setControllable(tetris)

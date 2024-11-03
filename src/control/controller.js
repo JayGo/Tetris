@@ -1,3 +1,5 @@
+import { Constant } from '../model/constant.js';
+
 export class Controller {
     static instance
 
@@ -39,10 +41,25 @@ export class Controller {
     }
 
     rotateR() {
-        if (this.controllable !== undefined) {
-            console.log('controller rotateR');
-            this.controllable.rotateR()
+        if (this.controllable === undefined) {
+            return
         }
+
+        if (Constant.DEBUG_ROTATE) {
+            console.log('controller rotateR');
+        }
+        this.controllable.rotate(Math.PI / 2)
+    }
+
+    rotateL() {
+        if (this.controllable === undefined) {
+            return
+        }
+
+        if (Constant.DEBUG_ROTATE) {
+            console.log('controller rotateL');
+        }
+        this.controllable.rotate(-Math.PI / 2)
     }
 
     resume() {
