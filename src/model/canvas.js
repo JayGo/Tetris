@@ -29,6 +29,18 @@ export class CanvasDelegate {
         return this.canvas.width;
     }
 
+    getLeft() {
+        return 0;
+    }
+
+    getRight() {
+        return this.getWidth();
+    }
+
+    getBottom() {
+        return this.canvas.height;
+    }
+
     draw() {
         this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.drawableList.forEach(drawable => { drawable.onDraw(this.canvasCtx) })

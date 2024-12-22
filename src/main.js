@@ -74,6 +74,8 @@ export function setupGame(canvas) {
         controller.translateD();
         canvasDelegate.draw();
     })
+
+    controller.start()
 }
 
 //TIP To find text strings in your project, you can use the <shortcut actionId="FindInPath"/> shortcut. Press it and type in <b>counter</b> – you’ll get all matches in one place.

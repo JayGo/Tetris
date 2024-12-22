@@ -42,6 +42,10 @@ export class Controller {
         this.controllable = controllable
     }
 
+    afterAction() {
+
+    }
+
     rotateR() {
         if (this.controllable === undefined || !this.isPlaying) {
             return
