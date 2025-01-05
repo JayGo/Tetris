@@ -207,6 +207,8 @@ class BaseTetris extends Drawable {
                 it.applyRotate(deg)
             })
         }
+
+        return rotateSuccess
     }
 
     translate(tx, ty) {
@@ -225,6 +227,8 @@ class BaseTetris extends Drawable {
                 it.applyTranslate(tx, ty)
             });
         }
+
+        return translateSuccess
     }
 
     onDraw(canvasCtx) {

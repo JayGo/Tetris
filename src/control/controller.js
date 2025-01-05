@@ -1,5 +1,6 @@
 import { Constant } from '../model/constant.js';
 
+
 export class Controller {
     static instance
 
@@ -12,6 +13,27 @@ export class Controller {
     intervalId
 
     controllable
+
+    static init(window, controller, canvasDelegate) {
+        window.addEventListener('keydown', function (event) {
+            switch (event.key) {
+                case 'ArrowUp':
+                    controller.rotateR();break;
+                case 'ArrowLeft':
+                    controller.translateL();break;
+                case 'ArrowRight':
+                    controller.translateR();break;
+                case 'ArrowDown':
+                    controller.translateD();break;
+                case ' ':
+                    controller.toggleState();break;
+                default:break;
+            }
+
+            canvasDelegate.draw()
+        });
+    }
+
 
     constructor() {
     }
@@ -53,13 +75,13 @@ export class Controller {
 
         if (Constant.DEBUG_ROTATE) {
             console.log('controller rotateR');
-            console.log(`before rotateR: ${tetris}`)
+            console.log(`before rotateR: ${this.controllable}`)
 
         }
         this.controllable.rotate(Math.PI / 2)
 
         if (Constant.DEBUG_ROTATE) {
-            console.log(`after rotateR: ${tetris}`)
+            console.log(`after rotateR: ${this.controllable}`)
         }
     }
 
@@ -84,7 +106,7 @@ export class Controller {
             return;
         }
 
-        this.controllable.translate(0, Constant.TETRIS_SIZE);
+        return this.controllable.translate(0, Constant.TETRIS_SIZE);
     }
 
     toggleState() {

@@ -1,11 +1,9 @@
 import { Drawable } from './canvas.js';
 
 export class Heap extends Drawable {
-  boxes = []
+  boxes = [];
 
-
-
-  static instance
+  static instance;
 
   constructor() {
     super()
@@ -13,18 +11,22 @@ export class Heap extends Drawable {
 
   static getInstance() {
     if (Heap.instance === undefined) {
-      Heap.instance = new Heap()
+      Heap.instance = new Heap();
     }
 
-    return Heap.instance
+    return Heap.instance;
   }
 
-  pushBoxes(boxes) {
-    this.boxes.push(boxes)
+  recycleTetris(tetris) {
+    tetris.boxes.forEach((box) => {
+      this.boxes.push(box);
+    });
   }
 
   onDraw(canvasCtx) {
-    this.boxes.forEach(box => {box.draw(canvasCtx)})
+    this.boxes.forEach(box => {
+      box.draw(canvasCtx);
+    });
   }
 
 }

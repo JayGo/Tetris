@@ -31,52 +31,52 @@ export function setupCounter(element) {
 import {TetrisFactory} from "./model/tetris.js";
 import {Constant} from "./model/constant.js";
 import {Controller} from "./control/controller.js";
-
-function setUpController() {
-    let controller = Controller.getInstance()
-
-    window.addEventListener('keydown', function (event) {
-        switch (event.key) {
-            case 'ArrowUp':
-                controller.rotateR();break;
-            case 'ArrowLeft':
-                controller.translateL();break;
-            case 'ArrowRight':
-                controller.translateR();break;
-            case 'ArrowDown':
-                controller.translateD();break;
-            case ' ':
-                controller.toggleState();break;
-            default:break;
-        }
-
-        canvasDelegate.draw()
-    });
-
-    return controller
-}
+import { Heap } from './model/heap.js';
 
 let canvasDelegate;
+let controller;
+let heap;
 
-export function setupGame(canvas) {
-    CanvasDelegate.init(canvas)
-    canvasDelegate = CanvasDelegate.getInstance()
+function generateTetris() {
+    let tetrisFactory = TetrisFactory.getInstance();
+    return tetrisFactory.makeTetris(Constant.TETRIS_TYPE_T);
+}
 
-    let tetrisFactory = TetrisFactory.getInstance()
-    let tetris = tetrisFactory.makeTetris(Constant.TETRIS_TYPE_T)
-    canvasDelegate.registerDrawable(tetris)
+function enableTetris(tetris) {
+    canvasDelegate.setCurrentTetris(tetris)
     canvasDelegate.draw()
 
-    let controller = setUpController()
     controller.setControllable(tetris)
+}
+
+export function setupGame(canvas) {
+    heap = Heap.getInstance()
+
+    CanvasDelegate.init(canvas, heap)
+    canvasDelegate = CanvasDelegate.getInstance()
+
+    controller = Controller.getInstance()
+    Controller.init(window, controller, canvasDelegate)
+
+    let tetris = generateTetris();
+    enableTetris(tetris)
+
+    // controller.setControllable(tetris)
 
     controller.setIntervalCallback(() => {
-        controller.translateD();
+        const transDownSuccess = controller.translateD();
         canvasDelegate.draw();
+
+        if (!transDownSuccess) {
+            let tetris = generateTetris();
+            enableTetris(tetris)
+        }
     })
 
     controller.start()
 }
+
+
 
 //TIP To find text strings in your project, you can use the <shortcut actionId="FindInPath"/> shortcut. Press it and type in <b>counter</b> – you’ll get all matches in one place.
 // setupCounter(document.getElementById('counter-value'));

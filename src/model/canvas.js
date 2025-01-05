@@ -1,14 +1,19 @@
+
 export class CanvasDelegate {
     canvas
     canvasCtx
-    drawableList = []
+
+    currentTetris
+
+    heap
 
     static instance
 
-    static init(canvas) {
+    static init(canvas, heap) {
         if (CanvasDelegate.instance === undefined) {
-            CanvasDelegate.instance = new CanvasDelegate(canvas);
+            CanvasDelegate.instance = new CanvasDelegate(canvas, heap);
         }
+
     }
 
     static getInstance() {
@@ -16,14 +21,20 @@ export class CanvasDelegate {
 
     }
 
-    constructor(canvas) {
+    constructor(canvas, heap) {
         this.canvas = canvas;
         this.canvasCtx = canvas.getContext("2d");
+        this.heap = heap
     }
 
-    registerDrawable(drawable) {
-        this.drawableList.push(drawable);
+    setCurrentTetris(tetris) {
+        if (this.currentTetris !== undefined) {
+            this.heap.recycleTetris(this.currentTetris)
+        }
+
+        this.currentTetris = tetris;
     }
+
 
     getWidth() {
         return this.canvas.width;
@@ -43,7 +54,8 @@ export class CanvasDelegate {
 
     draw() {
         this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.drawableList.forEach(drawable => { drawable.onDraw(this.canvasCtx) })
+        this.currentTetris.onDraw(this.canvasCtx)
+        this.heap.onDraw(this.canvasCtx)
     }
 }
 
